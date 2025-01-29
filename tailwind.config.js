@@ -26,7 +26,7 @@ export default {
         'black-1':'#3C3D37',
         'black-2':'#1E201E',
         'black-3':'#697565',
-        'primary': "#ECEEFF",
+        'primary': "#126aed",
         "coral-red": "#FF6452",
         "slate-gray": "#6D6D6D",
         "pale-blue": "#F5F6FF",
@@ -41,6 +41,9 @@ export default {
       },
       screens: {
         "wide": "1440px"
+      },
+      gridTemplateColumns:{
+        'auto':'repeat(auto-fill,minmax(200px,1fr))'
       }
     },
   },
