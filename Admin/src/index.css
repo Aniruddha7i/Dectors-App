@@ -13,10 +13,10 @@
   scroll-behavior: smooth;
 }
 .active hr{
-  @apply block;
+ 
 }
 .active p{
-  @apply bg-cyan-500;
+  
 }
 ::-webkit-scrollbar{
   @apply hidden;
