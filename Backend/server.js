@@ -4,6 +4,7 @@ import 'dotenv/config';
 import connectDB from './config/mongoDB.js';
 import connectCloudinary from './config/cloudinary.js';
 import adminRouter from './routes/adminRoutes.js';
+import doctorRouter from './routes/doctorsRoutes.js';
 // app config
 const app = express();
 const port = process.env.PORT || 5000;
@@ -15,7 +16,7 @@ app.use(cors()) //Without cors(), a request from a different domain (e.g., local
 
 // api endPoint
 app.use('/api/admin',adminRouter) // /api/admin/add-doctor or all-doctor or login
-
+app.use('/api/doctor',doctorRouter);
 
 app.get('/',(req,res)=>{
     res.send('API Working');

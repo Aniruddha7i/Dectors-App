@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { doctors } from '../assets/assets_frontend/assets';
+import { AppContext } from '../context/AppContext';
 const Doctors = () => {
   const Navigate = useNavigate();
   // dynamic routing
+  const { doctors } = useContext(AppContext);
   const { speciality } = useParams();
   const [filterDoc, setFilterDoc] = useState([]);
   const applyFilter = () => {
@@ -39,7 +40,7 @@ const Doctors = () => {
         <div className='w-full grid grid-cols-auto gap-4 gap-y-6'>
           {filterDoc.map((item, index) => (
             <div onClick={() => Navigate(`/appointment/${item._id}`)} key={index} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'>
-              <img className='bg-blue-50' src={item.image} alt="" />
+              <img className='bg-blue-50' src={item.profileImage} alt="" />
 
               <div className='p-4'>
 

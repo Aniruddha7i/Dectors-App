@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom';
-import { doctors } from '../assets/assets_frontend/assets';
 import { assets } from '../assets/assets_frontend/assets';
 import RelatedDoc from '../components/RelatedDoc';
+import { AppContext } from '../context/AppContext';
 
 const Appointment = () => {
+  const { doctors } = useContext(AppContext);
+
   const { docId } = useParams();
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('');
-
   // all 7 days
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -80,7 +81,7 @@ const Appointment = () => {
       {/* doctor details */}
       <div className='flex flex-col md:flex-row gap-3'>
         <div className='bg-primary w-full md:max-w-[19rem] rounded-lg flex justify-center'>
-          <img className='bg-primary w-full md:max-w-[19rem] rounded-lg' src={docInfo.image} alt="" />
+          <img className='bg-primary w-full md:max-w-[19rem] rounded-lg' src={docInfo.profileImage} alt="" />
         </div>
         {/* right side  */}
         <div className='border border-black px-7 py-5 rounded-xl'>

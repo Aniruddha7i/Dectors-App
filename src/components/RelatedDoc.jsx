@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { doctors } from '../assets/assets_frontend/assets';
+import React, { useState, useEffect, useContext } from 'react'
+import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 const RelatedDoc = ({ docId, speciality }) => {
     const Navigate = useNavigate();
+    const {doctors} = useContext(AppContext);
     const [relDoc, setRelDoc] = useState([]);
     useEffect(() => {
         if (speciality && doctors.length > 0) {
@@ -25,7 +26,7 @@ const RelatedDoc = ({ docId, speciality }) => {
                         key={index}
                         className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'
                     >
-                        <img className='bg-blue-50' src={item.image} alt="" />
+                        <img className='bg-blue-50' src={item.profileImage} alt="" />
 
                         <div className='p-4'>
                             <div className='flex items-center text-sm gap-2 text-center text-green-500'>

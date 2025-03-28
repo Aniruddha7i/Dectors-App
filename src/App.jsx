@@ -10,10 +10,11 @@ import MyAppointment from './pages/MyAppointment';
 import Appointment from './pages/Appointment';
 import Footer from './components/Footer';
 import { Routes,Route } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
 const App = () => {
   return (
     <div>
+      <ToastContainer />
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />

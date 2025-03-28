@@ -60,14 +60,14 @@ const Navbar = () => {
                   {/* Profile Option */}
                   <p
                     onClick={() => Navigate('/profile')}
-                    className='hover:text-primary hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-300'
+                    className='hover:text-primary hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-500'
                   >
                     My Profile
                   </p>
                   {/* Appointments Option */}
                   <p
                     onClick={() => Navigate('/my-appointments')}
-                    className='hover:text-primary hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-300'
+                    className='hover:text-primary hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-500'
                   >
                     My Appointments
                   </p>
@@ -76,7 +76,7 @@ const Navbar = () => {
                     onClick={() => {
                       setToken(false);
                     }}
-                    className='hover:text-red-500 hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-300'
+                    className='hover:text-red-500 hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-500'
                   >
                     Logout
                   </p>
