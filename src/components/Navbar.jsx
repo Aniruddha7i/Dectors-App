@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import logo from '../assets/assets_admin/admin_logo.svg'
 import profilePic from '../assets/assets_frontend/profile_pic.png';
 import dropDown from '../assets/assets_frontend/dropdown_icon.svg'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_frontend/assets';
+import { AppContext } from '../context/AppContext';
 
 const Navbar = () => {
 
   const Navigate = useNavigate();
   const [ShowMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+  const {token,setToken} = useContext(AppContext); // upto now.....
+  const logout = ()=>{
+    setToken(false);
+    localStorage.removeItem('token');
+    Navigate('/login');
+  }
   return (
     <div className='flex justify-between items-center text-sm py-4 mb-5 mx-2 border-b border-b-gray-400 md:w-[90%] md:mx-auto w-full'>
       {console.log('hi')}
@@ -73,9 +79,7 @@ const Navbar = () => {
                   </p>
                   {/* Logout Option */}
                   <p
-                    onClick={() => {
-                      setToken(false);
-                    }}
+                    onClick={logout}
                     className='hover:text-red-500 hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md transition-all duration-500'
                   >
                     Logout
