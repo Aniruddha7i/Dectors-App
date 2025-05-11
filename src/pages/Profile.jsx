@@ -1,36 +1,23 @@
-import React, { useState } from 'react';
-import { assets } from './../assets/assets_frontend/assets';
-
+import React, { useState,useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 const Profile = () => {
-  const [userDate, setUserData] = useState({
-    name: 'Edward Vincent',
-    image: assets.profile_pic,
-    Email: 'richardjameswap@gmail.com',
-    Phone: '+1  123 456 7890',
-    Address: {
-      line1: '57th Cross, Richmond ',
-      line2: 'Circle, Church Road, London',
-    },
-    Gender: 'Male',
-    DOB: '2024-02-10',
-  });
-
+  const { userData, setUserData } = useContext(AppContext);
   const [isEdit, setIsEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
+  return userData && (
     <div className="max-w-lg flex flex-col gap-6 text-sm mt-6 mx-auto p-6 bg-white shadow-xl rounded-lg transition-transform transform hover:shadow-2xl duration-300">
       {/* Profile Picture */}
       <img
         className="w-36 h-36 rounded-full mx-auto border-4 border-gray-200 shadow-sm hover:shadow-lg hover:scale-110 transition-transform duration-300 cursor-pointer"
-        src={userDate.image}
+        src={userData.image}
         alt="Profile Picture"
         onClick={() => setIsModalOpen(true)} // Open modal on click
       />
       {isEdit ? (
         <input
           type="text"
-          value={userDate.name}
+          value={userData.name}
           onChange={(e) =>
             setUserData((prev) => ({ ...prev, name: e.target.value }))
           }
@@ -39,7 +26,7 @@ const Profile = () => {
         />
       ) : (
         <p className="text-center text-lg font-semibold text-gray-800 hover:text-blue-500 transition duration-300">
-          {userDate.name}
+          {userData.name}
         </p>
       )}
       <hr className="my-4 border-gray-300" />
@@ -48,13 +35,13 @@ const Profile = () => {
         <div className="text-gray-700">
           <p className="font-medium">Email:</p>
           <p className="mb-2 hover:text-blue-500 transition duration-300">
-            {userDate.Email}
+            {userData.Email}
           </p>
           <p className="font-medium">Phone:</p>
           {isEdit ? (
             <input
               type="text"
-              value={userDate.Phone}
+              value={userData.Phone}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, Phone: e.target.value }))
               }
@@ -62,7 +49,7 @@ const Profile = () => {
             />
           ) : (
             <p className="mb-2 hover:text-blue-500 transition duration-300">
-              {userDate.Phone}
+              {userData.Phone}
             </p>
           )}
           <p className="font-medium">Address:</p>
@@ -70,11 +57,11 @@ const Profile = () => {
             <div>
               <input
                 type="text"
-                value={userDate.Address.line1}
+                value={userData.address.line1}
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
-                    Address: { ...prev.Address, line1: e.target.value },
+                    address: { ...prev.address, line1: e.target.value },
                   }))
                 }
                 className="w-full mb-1 border-b-2 border-gray-300 outline-none focus:border-blue-400 transition duration-300"
@@ -82,11 +69,11 @@ const Profile = () => {
               />
               <input
                 type="text"
-                value={userDate.Address.line2}
+                value={userData.address.line2}
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
-                    Address: { ...prev.Address, line2: e.target.value },
+                    address: { ...prev.address, line2: e.target.value },
                   }))
                 }
                 className="w-full border-b-2 border-gray-300 outline-none focus:border-blue-400 transition duration-300"
@@ -95,9 +82,9 @@ const Profile = () => {
             </div>
           ) : (
             <p className="mb-2 hover:text-blue-500 transition duration-300">
-              {userDate.Address.line1}
+              {userData.address.line1}
               <br />
-              {userDate.Address.line2}
+              {userData.address.line2}
             </p>
           )}
         </div>
@@ -108,7 +95,7 @@ const Profile = () => {
           <p className="font-medium">Gender:</p>
           {isEdit ? (
             <select
-              value={userDate.Gender}
+              value={userData.Gender}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, Gender: e.target.value }))
               }
@@ -119,21 +106,21 @@ const Profile = () => {
             </select>
           ) : (
             <p className="mb-2 hover:text-blue-500 transition duration-300">
-              {userDate.Gender}
+              {userData.Gender}
             </p>
           )}
           <p className="font-medium">Birthday:</p>
           {isEdit ? (
             <input
               type="date"
-              value={userDate.DOB}
+              value={userData.DOB}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, DOB: e.target.value }))
               }
               className="w-full border-b-2 border-gray-300 outline-none focus:border-blue-400 transition duration-300"
             />
           ) : (
-            <p>{userDate.DOB}</p>
+            <p>{userData.DOB}</p>
           )}
         </div>
       </div>
@@ -161,7 +148,7 @@ const Profile = () => {
           <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm">
             <img
               className="w-full rounded-lg"
-              src={userDate.image}
+              src={userData.image}
               alt="Profile"
             />
             <button

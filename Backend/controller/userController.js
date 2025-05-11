@@ -1,8 +1,9 @@
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import userModel from './../models/userModel.js';
-import jwt  from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { Suspense } from 'react';
+import { v2 as cloudinary } from 'cloudinary';
 const registorUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -16,7 +17,7 @@ const registorUser = async (req, res) => {
         else if (password.length < 5) return res.status(400).json({ message: "Password must be greater than 5 characters" });
 
         const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(password, salt);        
+        const hashPassword = await bcrypt.hash(password, salt);
 
         const userData = {
             name,
@@ -26,7 +27,7 @@ const registorUser = async (req, res) => {
         const newUser = new userModel(userData);
         const user = await newUser.save();
 
-        const token  = jwt.sign({id:user._id},process.env.SECRET_JWT);
+        const token = jwt.sign({ id: user._id }, process.env.SECRET_JWT);
         res.status(201).json({ success: true, token });
 
     } catch (error) {
@@ -65,4 +66,38 @@ const LoginUser = async (req, res) => {
 
 // api for getting user data
 
-export { registorUser,LoginUser };
+const getUserData = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        // we need a user authintication middleware to get the user id from the token
+        const userData = await userModel.findById(userId).select("-password");
+        res.status(200).json({ success: true, userData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+// api for update user data
+const updateUserData = async (req, res) => {
+    try {
+        const { userId, name, phone, address, dob, gender } = req.body;
+        const Image = req.file;
+        if (!name || !phone || !address || !dob || !gender) {
+            return res.status(400).json({ success: false, message: "Data missing" });
+        }
+        if (Image) {
+            await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender });
+            const imageUpload = await cloudinary.uploader.upload(Image.path, { resource_type: 'image' });
+            const imageUrl = imageUpload.secure_url;
+            await userModel.findByIdAndUpdate(userId, { image: imageUrl });
+
+        }
+        res.status(200).json({ success: true, message: "User data updated successfully" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+export { registorUser, LoginUser, getUserData, updateUserData };
