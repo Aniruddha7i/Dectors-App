@@ -4,6 +4,7 @@ import userModel from './../models/userModel.js';
 import jwt from 'jsonwebtoken';
 import { Suspense } from 'react';
 import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
 const registorUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -86,8 +87,16 @@ const updateUserData = async (req, res) => {
         if (!name || !phone || !address || !dob || !gender) {
             return res.status(400).json({ success: false, message: "Data missing" });
         }
+
+        await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender });
+        dotenv.config(); // Load environment variables
+
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        });
         if (Image) {
-            await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender });
             const imageUpload = await cloudinary.uploader.upload(Image.path, { resource_type: 'image' });
             const imageUrl = imageUpload.secure_url;
             await userModel.findByIdAndUpdate(userId, { image: imageUrl });

@@ -60,7 +60,8 @@ const AppContextProvider = (props) => {
         token, setToken,
         backendUrl,
         userData, setUserData,
-        getDoctors
+        getDoctors,
+        getUserData
     }
     return (
         <AppContext.Provider value={value}>
