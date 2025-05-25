@@ -93,7 +93,7 @@ const Appointment = () => {
       }
     } catch (error) {
       toast.error(error.message,'3');
-      console.log(error,'4');
+      console.log(error.message,'4');
     }
   }
   useEffect(() => {

@@ -114,24 +114,24 @@ const updateUserData = async (req, res) => {
 
 
 // api for appointment booking
-const appointmentBooking = async (req,res)=>{
-    try{
+const appointmentBooking = async (req, res) => {
+    try {
         const { docId, userId, slotDate, slotTime } = req.body;
         const docData = await doctorModel.findById(docId).select('-password');
 
-        if(!docData.available){
-            return res.status(400).json({ success: false, message: "Doctor is not available" });
+        if (!docData.available) {
+            return res.json({ success: false, message: "Doctor is not available" });
         }
         let slot_booked = docData.slot_booked;
         // checking for slot booking avalability
-        if(slot_booked[slotDate]){
-            if(slot_booked[slotDate].includes(slotTime)){
-                return res.status(400).json({ success: false, message: "Slot already booked" });
+        if (slot_booked[slotDate]) {
+            if (slot_booked[slotDate].includes(slotTime)) {
+                return res.json({ success: false, message: "Slot already booked" });
             }
-            else{
+            else {
                 slot_booked[slotDate].push(slotTime);
             }
-        }else{
+        } else {
             slot_booked[slotDate] = [];
             slot_booked[slotDate].push(slotTime);
         }
@@ -156,9 +156,22 @@ const appointmentBooking = async (req,res)=>{
         await doctorModel.findByIdAndUpdate(docId, { slot_booked });
         res.status(200).json({ success: true, message: "Appointment booked successfully" });
 
-    }catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 }
-export { registorUser, LoginUser, getUserData, updateUserData, appointmentBooking };
+
+// api for getting all appointments of a user
+const listAppointments = async (req, res) => {
+    try{
+        const { userId } = req.body;
+        const appointments = await appointmentModel.find({ userId });
+        res.json({ success: true, appointments });
+
+    }catch (error) {
+        console.error(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+export { registorUser, LoginUser, getUserData, updateUserData, appointmentBooking, listAppointments };
