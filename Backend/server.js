@@ -6,22 +6,25 @@ import connectCloudinary from './config/cloudinary.js';
 import adminRouter from './routes/adminRoutes.js';
 import doctorRouter from './routes/doctorsRoutes.js';
 import userRouter from './routes/userRoutes.js';
-// app config
+
 const app = express();
-const port = process.env.PORT || 5000;
+
+// Initialize services
 connectDB();
 connectCloudinary();
-// middleware
+
+// Middlewares
 app.use(express.json());
-app.use(cors()) //Without cors(), a request from a different domain (e.g., localhost:3000 making a request to localhost:5000) will fail with a CORS error. By using app.use(cors()), you allow such cross-origin requests.
+app.use(cors());
 
-// api endPoint
-app.use('/api/admin',adminRouter) // /api/admin/add-doctor or all-doctor or login
-app.use('/api/doctor',doctorRouter);
-app.use('/api/user',userRouter);
+// Routes
+app.use('/api/admin', adminRouter);
+app.use('/api/doctor', doctorRouter);
+app.use('/api/user', userRouter);
 
-app.get('/',(req,res)=>{
-    res.send('API Working');
-})
+app.get('/', (req, res) => {
+  res.send('API Working');
+});
 
-app.listen(port,()=>console.log('server',port))
+// ✅ Export the handler for Vercel (no app.listen)
+export default app;
