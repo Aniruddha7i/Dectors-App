@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 import { Suspense } from 'react';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import doctorModel from '../models/doctorsModel.js';
+import appointmentModel from '../models/appointmentModel.js';
 const registorUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -109,4 +111,54 @@ const updateUserData = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
-export { registorUser, LoginUser, getUserData, updateUserData };
+
+
+// api for appointment booking
+const appointmentBooking = async (req,res)=>{
+    try{
+        const { docId, userId, slotDate, slotTime } = req.body;
+        const docData = await doctorModel.findById(docId).select('-password');
+
+        if(!docData.available){
+            return res.status(400).json({ success: false, message: "Doctor is not available" });
+        }
+        let slot_booked = docData.slot_booked;
+        // checking for slot booking avalability
+        if(slot_booked[slotDate]){
+            if(slot_booked[slotDate].includes(slotTime)){
+                return res.status(400).json({ success: false, message: "Slot already booked" });
+            }
+            else{
+                slot_booked[slotDate].push(slotTime);
+            }
+        }else{
+            slot_booked[slotDate] = [];
+            slot_booked[slotDate].push(slotTime);
+        }
+
+        const userData = await userModel.findById(userId).select('-password');
+
+        delete docData.slot_booked;
+        const appointmentDate = {
+            docId,
+            userId,
+            slotDate,
+            slotTime,
+            userData,
+            docData,
+            amount: docData.fees,
+            date: Date.now(),
+        }
+
+        const newAppointment = new appointmentModel(appointmentDate);
+        await newAppointment.save();
+
+        await doctorModel.findByIdAndUpdate(docId, { slot_booked });
+        res.status(200).json({ success: true, message: "Appointment booked successfully" });
+
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+export { registorUser, LoginUser, getUserData, updateUserData, appointmentBooking };
