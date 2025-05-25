@@ -18,11 +18,12 @@ connectCloudinary();
 // Middleware
 app.use(express.json());
 
-// ✅ CORS setup with corrected URLs (no trailing slashes)
+// ✅ Recommended CORS setup for multiple frontends
 const allowedOrigins = [
   'http://localhost:3000',                    // main frontend (local dev)
   'http://localhost:5173',                    // admin frontend (local dev)
-  'https://doctors-g9lfl8ock-aniruddha-chandras-projects.vercel.app' // main frontend (production)
+  'https://doctors-g9lfl8ock-aniruddha-chandras-projects.vercel.app',  // main frontend (prod)
+  // add other allowed origins here if needed
 ];
 
 app.use(cors({
@@ -46,5 +47,7 @@ app.get('/', (req, res) => {
   res.send('API is working ✅');
 });
 
-// Start server
-app.listen(port, () => console.log(`✅ Server running on port ${port}`));
+// Start server - bind to all interfaces so it's accessible from other devices
+app.listen(port, '0.0.0.0', () => {
+  console.log(`✅ Server running on port ${port}`);
+});
