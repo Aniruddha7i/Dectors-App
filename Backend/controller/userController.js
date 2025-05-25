@@ -174,4 +174,34 @@ const listAppointments = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 }
-export { registorUser, LoginUser, getUserData, updateUserData, appointmentBooking, listAppointments };
+
+// api for appointment cancellation
+const cancelAppointment = async (req,res)=>{
+    try{
+        const { appointmentId, userId } = req.body;
+        const appointment = await appointmentModel.findById(appointmentId);
+        if (!appointment) {
+            return res.json({ success: false, message: "Appointment not found" });
+        }
+
+        // cancel the appointment
+        await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled: true});
+
+        // relesing doctor slots
+        const docId = appointment.docId;
+        const slotDate = appointment.slotDate;
+        const slotTime = appointment.slotTime;
+        const docData = await doctorModel.findById(docId);
+
+        let slot_booked = docData.slot_booked;
+        console.log(slot_booked);
+        slot_booked[slotDate] = slot_booked[slotDate].filter((time) => time !== slotTime);
+        await doctorModel.findByIdAndUpdate(docId, { slot_booked });
+        res.json({ success: true, message: "Appointment cancelled successfully" });
+
+    }catch(error){
+        console.error(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+export { registorUser, LoginUser, getUserData, updateUserData, appointmentBooking, listAppointments, cancelAppointment };

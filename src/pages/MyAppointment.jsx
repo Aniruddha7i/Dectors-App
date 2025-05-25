@@ -22,7 +22,7 @@ const MyAppointment = () => {
   }
 
 
-
+// api call for appointment list
   const getAppointments = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/user/appointments', { headers: { token } });
@@ -41,6 +41,24 @@ const MyAppointment = () => {
       getAppointments();
     }
   }, [token]);
+
+// api call for appointment cancell
+  const cancellAppointment = async(appointmentId)=>{
+    try{
+      const { data } = await axios.post(backendUrl+'/api/user/cancel-appointment', { appointmentId }, { headers: { token } });
+      if(data.success){
+        console.log('ok');
+        toast.success(data.message);
+        getAppointments();
+      }else{
+        toast.error(data.message);
+      }
+
+    }catch(error){
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
 
   return (
     <div className='md:w-[90%] md:m-auto max-md:mx-4 w-full'>
@@ -61,8 +79,10 @@ const MyAppointment = () => {
             </div>
             <div></div>
             <div className='flex flex-col justify-end gap-2'>
-              <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-blue-100 hover:bg-primary hover:text-white transition-all duration-500'>Pay Online</button>
-              <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-orange-100 hover:bg-red-400 hover:text-white transition-all duration-500'>Cancel Appointment</button>
+              {!item.cancelled &&  <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-blue-100 hover:bg-primary hover:text-white transition-all duration-500'>Pay Online</button>}
+              {!item.cancelled && <button onClick={()=>cancellAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-orange-100 hover:bg-red-400 hover:text-white transition-all duration-500'>Cancel Appointment</button>}
+              {item.cancelled && <span className='text-medium text-center sm:min-w-48 py-2 border border-black-1 rounded  text-red-500 transition-all duration-500'>Cancelled</span>}
+              
             </div>
           </div>
         ))}
