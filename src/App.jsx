@@ -11,6 +11,7 @@ import Appointment from './pages/Appointment';
 import Footer from './components/Footer';
 import { Routes,Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import Store from './pages/Store';
 const App = () => {
   return (
     <div>
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='/my-appointments' element={<MyAppointment />} />
         <Route path='/appointment/:docId' element={<Appointment />} />
+        <Route path='/store' element={<Store />} />
       </Routes>
       <Footer />
     </div>

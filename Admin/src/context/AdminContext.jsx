@@ -7,6 +7,8 @@ const AdminContextProvider = (props) => {
     const [atoken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '');
     const [doctors, setDoctors] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    // Doctors
     const getAllDoctors = async () => {
 
         try {
@@ -37,6 +39,9 @@ const AdminContextProvider = (props) => {
             toast.error(error.message);
         }
     }
+
+    // medicine
+    
     const value = {
         atoken, setAToken,
         backendUrl, doctors,

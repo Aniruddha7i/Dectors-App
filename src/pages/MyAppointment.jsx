@@ -60,6 +60,23 @@ const MyAppointment = () => {
     }
   }
 
+  // api call for payment using razorpay
+  const payRazorpay = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(backendUrl + '/api/user/payment-razorpay', { appointmentId }, { headers: { token } });
+      if (data.success) {
+        // Handle successful payment here
+        console.log('Payment successful:', data);
+        toast.success('Payment successful');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error(error.message);
+    }
+  }
+
   return (
     <div className='md:w-[90%] md:m-auto max-md:mx-4 w-full'>
       <p className='font-medium text-zinc-700 pb-3 mt-12 border-b'>My appointments</p>
@@ -79,7 +96,7 @@ const MyAppointment = () => {
             </div>
             <div></div>
             <div className='flex flex-col justify-end gap-2'>
-              {!item.cancelled &&  <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-blue-100 hover:bg-primary hover:text-white transition-all duration-500'>Pay Online</button>}
+              {!item.cancelled &&  <button onClick={()=>payRazorpay(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-blue-100 hover:bg-primary hover:text-white transition-all duration-500'>Pay Online</button>}
               {!item.cancelled && <button onClick={()=>cancellAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-orange-100 hover:bg-red-400 hover:text-white transition-all duration-500'>Cancel Appointment</button>}
               {item.cancelled && <span className='text-medium text-center sm:min-w-48 py-2 border border-black-1 rounded  text-red-500 transition-all duration-500'>Cancelled</span>}
               

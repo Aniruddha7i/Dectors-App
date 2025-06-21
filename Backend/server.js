@@ -13,11 +13,15 @@ connectDB();
 connectCloudinary();
 // middleware
 app.use(express.json());
-// app.use(cors()) //Without cors(), a request from a different domain (e.g., localhost:3000 making a request to localhost:5000) will fail with a CORS error. By using app.use(cors()), you allow such cross-origin requests.
+// app.use(cors()) //Without cors(), a request from a different domain (e.g., localhost:5000 making a request to localhost:5000) will fail with a CORS error. By using app.use(cors()), you allow such cross-origin requests.
+
+// for global 
 app.use(cors({
-  origin: "https://backend-server-doctor-app.vercel.app", // your Vercel frontend domain
+  origin: "https://backend-server-doctor-app.vercel.app", // Vercel frontend domain
   credentials: true
 }));
+
+
 // api endPoint
 app.use('/api/admin',adminRouter) // /api/admin/add-doctor or all-doctor or login
 app.use('/api/doctor',doctorRouter);

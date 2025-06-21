@@ -25,6 +25,10 @@ function SideBar() {
                         <img src={assets.people_icon} alt="" />
                         <p>Doctors List</p>
                     </NavLink>
+                    <NavLink className={({isActive})=>`flex items-center gap-3 px-3.5 py-3 md:px-9 md:min-w-72 cursor-pointer ${isActive?'bg-[#f2f3ff] border-r-4 border-violet-500':''}`} to={'/add-medicine'}>
+                        <img src={assets.add_icon} alt="" />
+                        <p>Add Medicines</p>
+                    </NavLink>
                 </ul>
             }
 
