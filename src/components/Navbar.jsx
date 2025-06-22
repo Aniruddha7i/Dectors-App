@@ -130,6 +130,13 @@ const Navbar = () => {
               <p className='py-1 px-2 rounded-lg'>Contact</p>
               {/* <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' /> */}
             </NavLink>
+            
+            <NavLink to={'/store'} onClick={() => setShowMenu(false)}>
+              <p className='py-1 px-2 rounded-lg'>Store</p>
+              {/* <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' /> */}
+            </NavLink>
+
+            
           </ul>
         </div>
 

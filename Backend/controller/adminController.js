@@ -159,7 +159,7 @@ const LoginAdmin = async (req, res) => {
     }
 }
 
-// API for geting all doctors
+// API for getting all doctors
 const allDoctors = async (req, res) => {
     try {
         const doctors = await doctorModel.find({}).select("-password"); // exclude password
@@ -171,4 +171,16 @@ const allDoctors = async (req, res) => {
     }
 }
 
-export { addDoctors, LoginAdmin, allDoctors, addMedicine };
+// API for getting all medicines
+const allMedicine = async (req, res) => {
+    try {
+        const medicine = await MedicineModel.find({});
+        res.status(200).json({ success: true, medicine });
+
+    } catch (error) {
+        console.error("Error Login Admin:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+}
+
+export { addDoctors, LoginAdmin, allDoctors, addMedicine,allMedicine};
