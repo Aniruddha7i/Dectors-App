@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import doctorModel from '../models/doctorsModel.js';
 import appointmentModel from '../models/appointmentModel.js';
 import razorpay from 'razorpay';
-import {sendAppointmentEmail, sendAppointmentSms} from '../middleware/Notification.js';
+import {sendBookingConfirmationEmail, sendBookingConfirmationSms} from '../middleware/Notification.js';
 
 const registorUser = async (req, res) => {
     try {
@@ -119,25 +119,20 @@ const updateUserData = async (req, res) => {
 // api for appointment booking
 const appointmentBooking = async (req, res) => {
     try {
-        // --- NEW: Get appointmentType from request body ---
-        const { docId, userId, slotDate, slotTime, appointmentType } = req.body; 
+        const { docId, userId, slotDate, slotTime, appointmentType } = req.body;
         
         const docData = await doctorModel.findById(docId).select('-password');
-
         if (!docData.available) {
             return res.json({ success: false, message: "Doctor is not available" });
         }
+
         let slot_booked = docData.slot_booked;
-        // checking for slot booking avalability
-        if (slot_booked[slotDate]) {
-            if (slot_booked[slotDate].includes(slotTime)) {
-                return res.json({ success: false, message: "Slot already booked" });
-            }
-            else {
-                slot_booked[slotDate].push(slotTime);
-            }
+        if (slot_booked[slotDate] && slot_booked[slotDate].includes(slotTime)) {
+            return res.json({ success: false, message: "Slot already booked" });
         } else {
-            slot_booked[slotDate] = [];
+            if (!slot_booked[slotDate]) {
+                slot_booked[slotDate] = [];
+            }
             slot_booked[slotDate].push(slotTime);
         }
 
@@ -158,31 +153,22 @@ const appointmentBooking = async (req, res) => {
         const newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
-        // --- NEW: Logic for Online Appointments ---
+        // 1. Send immediate booking confirmation for ALL appointments
+        await sendBookingConfirmationEmail(newAppointment);
+        await sendBookingConfirmationSms(newAppointment);
+
+        // 2. Generate meeting link ONLY for online appointments
         if (appointmentType === 'Online') {
-            // Generate a unique Jitsi meeting link using the appointment's unique _id
             const meetingLink = `https://meet.jit.si/DC-Appointment-${newAppointment._id}`;
-            
-            // Update the appointment with the meeting link
             await appointmentModel.findByIdAndUpdate(newAppointment._id, { meetingLink });
-
-            // Prepare appointment object for notifications
-            const fullAppointmentDetails = { ...newAppointment._doc, meetingLink };
-
-            // Send Email and SMS Notifications
-            // NOTE: For a production app, you would schedule these notifications to be sent
-            // closer to the appointment time using a library like 'node-cron'.
-            // For this example, we send them immediately upon booking.
-            await sendAppointmentEmail(fullAppointmentDetails);
-            await sendAppointmentSms(fullAppointmentDetails);
         }
 
         await doctorModel.findByIdAndUpdate(docId, { slot_booked });
         res.status(200).json({ success: true, message: "Appointment booked successfully" });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: error.message });
+        console.error("Error in appointment booking:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
     }
 }
 
