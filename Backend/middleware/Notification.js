@@ -5,8 +5,8 @@ import twilio from 'twilio';
 // Initializes the services using credentials from your .env file.
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
-    port: 587,
-    secure: false, // true for 465, false for other ports
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
