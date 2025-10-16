@@ -15,6 +15,8 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('');
+
+  const [appointmentType, setAppointmentType] = useState('Physical');
   // all 7 days
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -73,27 +75,32 @@ const Appointment = () => {
       toast.warn('Login to book an appointment');
       return Navigate('/login');
     }
+    if (!slotTime) {
+      toast.error('Please select a time slot.');
+      return;
+    }
 
     try {
       const date = docSlots[slotIndex][0].dateTime;
       let day = date.getDate();
-      let month = date.getMonth() + 1; // Months are zero-based in JavaScript
+      let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
       const slotDate = day + '_' + month + '_' + year;
-      console.log(slotDate);
-      // call api to book appointment
-      const { data } = await axios.post(backendUrl+'/api/user/appointment-booking',{docId,slotDate,slotTime},{headers:{token}})
+
+      // --- UPDATED: Send appointmentType in the request body ---
+      const requestData = { docId, slotDate, slotTime, appointmentType };
+      const { data } = await axios.post(backendUrl + '/api/user/appointment-booking', requestData, { headers: { token } })
+
       if (data.success) {
-        toast.success(data.message,'1');
+        toast.success(data.message);
         getDoctors();
         return Navigate('/my-appointments');
       } else {
-        toast.error(data.message,'2');
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message,'3');
-      console.log(error.message,'4');
+      toast.error(error.message);
     }
   }
   useEffect(() => {
@@ -105,7 +112,7 @@ const Appointment = () => {
   }, [docInfo]);
 
   useEffect(() => {
-    console.log(docSlots,'docSlots');
+    console.log(docSlots, 'docSlots');
   }, [docSlots]);
 
   return docInfo && (
@@ -153,6 +160,34 @@ const Appointment = () => {
               {item.time.toLowerCase()}
             </p>
           ))}
+        </div>
+
+        <div className='mt-6'>
+          <p className='font-medium text-gray-600'>Select Checkup Type</p>
+          <div className='flex gap-4 mt-2'>
+            <label className='flex items-center gap-2 cursor-pointer'>
+              <input
+                type="radio"
+                name="appointmentType"
+                value="Physical"
+                checked={appointmentType === 'Physical'}
+                onChange={(e) => setAppointmentType(e.target.value)}
+                className='h-4 w-4'
+              />
+              Physical Checkup
+            </label>
+            <label className='flex items-center gap-2 cursor-pointer'>
+              <input
+                type="radio"
+                name="appointmentType"
+                value="Online"
+                checked={appointmentType === 'Online'}
+                onChange={(e) => setAppointmentType(e.target.value)}
+                className='h-4 w-4'
+              />
+              Online Checkup
+            </label>
+          </div>
         </div>
         <button onClick={bookAppointment} className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an appointment</button>
 
